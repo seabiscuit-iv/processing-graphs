@@ -3,12 +3,11 @@ int nodes = 6;
 int FRAMERATE = 60;
 int frame = 0;
 boolean run = false;
+boolean[] visited;
 
 void setup() {
     frameRate(FRAMERATE);
     graph = generateRandomGraph(nodes);
-    graph[2][3] = 1;
-    graph[3][2] = 1;
     size(600, 600);
     graphSetup(graph);
 }
@@ -18,14 +17,39 @@ void draw() {
     drawGraph(graph);
 
     if (!run) {
-        thread("dfs");
+        thread("runDFS");
         run = true;
     }
 }
 
-public void dfs(){
+public void runDFS(){
+    visited = new boolean[graph.length];
+    for(int i = 0; i < graph.length; i++){
+        if(!visited[i]){
+            dfs(i);
+        }
+    }
+    // dfs(0);
+}
+
+public void dfs(int node){
+    visited[node] = true;
+    // println("Entered " + node);
     delay(1000);
-    changeNodeColor(1, color(100, 0, 0));
+    changeNodeColor(node, color(100, 0, 0));
+    for(int i = 0; i < graph.length; i++){
+        if(!visited[i] && graph[node][i]==1){
+            delay(1000);
+            // println("Changed edge " + node + " to " + i);
+            changeEdgeColor(node, i, color(100, 0, 0));
+            dfs(i);
+            delay(1000);
+            changeEdgeColor(node, i, color(255));
+        }
+    }
+    delay(1000);
+    changeNodeColor(node, color(0, 100, 0));
+    // println("Leaving " + node);
 }
 
 int[][] generateRandomGraph(int numNodes){

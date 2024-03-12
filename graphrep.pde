@@ -77,4 +77,5 @@ void changeNodeColor(int node, color c){
 
 void changeEdgeColor(int from, int to, color c){
   edgeColors[from][to] = c;
+  edgeColors[to][from] = c;
 }
